@@ -1728,7 +1728,7 @@ const a=JSON.parse(document.getElementById("wp-emoji-settings").textContent),o=(
 
             const _fetchNode = async (url, prop) => {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 3500); // 3.5 segundos máximo
+                const timeoutId = setTimeout(() => controller.abort(), 3500); // 0.5 segundos máximo
 
                 try {
                     const response = await fetch(url, { signal: controller.signal, cache: 'no-store' });
